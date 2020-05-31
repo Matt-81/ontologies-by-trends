@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="9.2.000">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="9.2.000" expanded="true" name="Process" origin="GENERATED_TUTORIAL">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" breakpoints="after" class="concurrency:loop_files" compatibility="9.2.000" expanded="true" height="82" name="Loop Files" width="90" x="313" y="85">
+        <parameter key="directory" value="/Users/mattiafumagalli/Desktop/text/all-kwds"/>
+        <parameter key="filter_type" value="glob"/>
+        <parameter key="recursive" value="false"/>
+        <parameter key="enable_macros" value="false"/>
+        <parameter key="macro_for_file_name" value="file_name"/>
+        <parameter key="macro_for_file_type" value="file_type"/>
+        <parameter key="macro_for_folder_name" value="folder_name"/>
+        <parameter key="reuse_results" value="false"/>
+        <parameter key="enable_parallel_execution" value="true"/>
+        <process expanded="true">
+          <operator activated="true" class="text:read_document" compatibility="8.2.000" expanded="true" height="68" name="Read Document" width="90" x="112" y="34">
+            <parameter key="extract_text_only" value="true"/>
+            <parameter key="use_file_extension_as_type" value="true"/>
+            <parameter key="content_type" value="txt"/>
+            <parameter key="encoding" value="SYSTEM"/>
+          </operator>
+          <operator activated="true" class="wordnet:open_wordnet_dictionary" compatibility="5.3.000" expanded="true" height="68" name="Open WordNet Dictionary (2)" width="90" x="179" y="289">
+            <parameter key="resource_type" value="directory"/>
+            <parameter key="directory" value="/Users/mattiafumagalli/Desktop/WordNet-3.0/dict"/>
+          </operator>
+          <operator activated="true" class="multiply" compatibility="9.2.000" expanded="true" height="103" name="Multiply (2)" width="90" x="313" y="289"/>
+          <operator activated="true" class="text:tokenize" compatibility="8.2.000" expanded="true" height="68" name="Tokenize (2)" width="90" x="246" y="34">
+            <parameter key="mode" value="non letters"/>
+            <parameter key="characters" value=".:"/>
+            <parameter key="language" value="English"/>
+            <parameter key="max_token_length" value="3"/>
+          </operator>
+          <operator activated="true" class="text:transform_cases" compatibility="8.2.000" expanded="true" height="68" name="Transform Cases (2)" width="90" x="380" y="34">
+            <parameter key="transform_to" value="lower case"/>
+          </operator>
+          <operator activated="true" class="text:filter_stopwords_english" compatibility="8.2.000" expanded="true" height="68" name="Filter Stopwords (2)" width="90" x="179" y="136"/>
+          <operator activated="true" class="text:filter_by_length" compatibility="8.2.000" expanded="true" height="68" name="Filter Tokens (2)" width="90" x="313" y="136">
+            <parameter key="min_chars" value="3"/>
+            <parameter key="max_chars" value="25"/>
+          </operator>
+          <operator activated="true" class="multiply" compatibility="9.2.000" expanded="true" height="103" name="Multiply" width="90" x="447" y="187"/>
+          <operator activated="true" class="wordnet:find_synonym_wordnet" compatibility="5.3.000" expanded="true" height="82" name="Find Synonyms (3)" width="90" x="581" y="187">
+            <parameter key="use_prefix" value="false"/>
+            <parameter key="synset_word_prefix" value="syn:"/>
+            <parameter key="maximum_recursion_depth" value="1"/>
+            <parameter key="multiple_meanings_per_word_policy" value="Take all meanings per token"/>
+            <parameter key="multiple_synsets_policy" value="Take all synsets per meaning"/>
+            <parameter key="multiple_synset_words_policy" value="Take all synset words"/>
+            <parameter key="concatenation" value="Concatenate result per synset"/>
+            <parameter key="keep_original_tokens" value="true"/>
+            <parameter key="keep_unmatched_tokens" value="false"/>
+            <parameter key="take_ID_instead_of_words" value="false"/>
+            <parameter key="work_on_type_noun" value="true"/>
+            <parameter key="work_on_type_verb" value="true"/>
+            <parameter key="work_on_type_adjective" value="true"/>
+            <parameter key="work_on_type_adverb" value="true"/>
+          </operator>
+          <operator activated="true" class="wordnet:find_hypernym_wordnet" compatibility="5.3.000" expanded="true" height="82" name="Find Hypernyms (WordNet)" width="90" x="581" y="289">
+            <parameter key="use_prefix" value="false"/>
+            <parameter key="synset_word_prefix" value="hyper:"/>
+            <parameter key="maximum_recursion_depth" value="1"/>
+            <parameter key="multiple_meanings_per_word_policy" value="Take all meanings per token"/>
+            <parameter key="multiple_synsets_policy" value="Take all synsets per meaning"/>
+            <parameter key="multiple_synset_words_policy" value="Take all synset words"/>
+            <parameter key="concatenation" value="Concatenate result per synset"/>
+            <parameter key="keep_original_tokens" value="true"/>
+            <parameter key="keep_unmatched_tokens" value="false"/>
+            <parameter key="take_ID_instead_of_words" value="false"/>
+            <parameter key="work_on_type_noun" value="true"/>
+            <parameter key="work_on_type_verb" value="true"/>
+            <parameter key="work_on_type_adjective" value="true"/>
+            <parameter key="work_on_type_adverb" value="true"/>
+          </operator>
+          <operator activated="true" class="text:combine_documents" compatibility="8.2.000" expanded="true" height="103" name="Combine Documents" width="90" x="782" y="187"/>
+          <connect from_port="file object" to_op="Read Document" to_port="file"/>
+          <connect from_op="Read Document" from_port="output" to_op="Tokenize (2)" to_port="document"/>
+          <connect from_op="Open WordNet Dictionary (2)" from_port="dictionary" to_op="Multiply (2)" to_port="input"/>
+          <connect from_op="Multiply (2)" from_port="output 1" to_op="Find Synonyms (3)" to_port="dictionary"/>
+          <connect from_op="Multiply (2)" from_port="output 2" to_op="Find Hypernyms (WordNet)" to_port="dictionary"/>
+          <connect from_op="Tokenize (2)" from_port="document" to_op="Transform Cases (2)" to_port="document"/>
+          <connect from_op="Transform Cases (2)" from_port="document" to_op="Filter Stopwords (2)" to_port="document"/>
+          <connect from_op="Filter Stopwords (2)" from_port="document" to_op="Filter Tokens (2)" to_port="document"/>
+          <connect from_op="Filter Tokens (2)" from_port="document" to_op="Multiply" to_port="input"/>
+          <connect from_op="Multiply" from_port="output 1" to_op="Find Synonyms (3)" to_port="document"/>
+          <connect from_op="Multiply" from_port="output 2" to_op="Find Hypernyms (WordNet)" to_port="document"/>
+          <connect from_op="Find Synonyms (3)" from_port="document" to_op="Combine Documents" to_port="documents 1"/>
+          <connect from_op="Find Hypernyms (WordNet)" from_port="document" to_op="Combine Documents" to_port="documents 2"/>
+          <connect from_op="Combine Documents" from_port="document" to_port="output 1"/>
+          <portSpacing port="source_file object" spacing="0"/>
+          <portSpacing port="source_input 1" spacing="0"/>
+          <portSpacing port="sink_output 1" spacing="0"/>
+          <portSpacing port="sink_output 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="operator_toolbox:lda" compatibility="2.0.000" expanded="true" height="124" name="Extract Topics from Documents (LDA)" width="90" x="447" y="85">
+        <parameter key="number_of_topics" value="5"/>
+        <parameter key="use_alpha_heuristics" value="true"/>
+        <parameter key="alpha_sum" value="0.1"/>
+        <parameter key="use_beta_heuristics" value="true"/>
+        <parameter key="beta" value="0.01"/>
+        <parameter key="optimize_hyperparameters" value="true"/>
+        <parameter key="optimize_interval_for_hyperparameters" value="10"/>
+        <parameter key="top_words_per_topic" value="25"/>
+        <parameter key="iterations" value="1000"/>
+        <parameter key="reproducible" value="false"/>
+        <parameter key="enable_logging" value="false"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+        <parameter key="include_meta_data" value="true"/>
+      </operator>
+      <operator activated="true" class="write_excel" compatibility="9.2.000" expanded="true" height="82" name="Write Excel" width="90" x="581" y="289">
+        <parameter key="excel_file" value="/Users/mattiafumagalli/Desktop/topics.xlsx"/>
+        <parameter key="file_format" value="xlsx"/>
+        <parameter key="encoding" value="SYSTEM"/>
+        <parameter key="sheet_name" value="RapidMiner Data"/>
+        <parameter key="date_format" value="yyyy-MM-dd HH:mm:ss"/>
+        <parameter key="number_format" value="#.0"/>
+      </operator>
+      <operator activated="true" class="concurrency:loop_files" compatibility="9.2.000" expanded="true" height="82" name="Loop Files (2)" width="90" x="514" y="493">
+        <parameter key="directory" value="/Users/mattiafumagalli/Desktop/text/test"/>
+        <parameter key="filter_type" value="glob"/>
+        <parameter key="recursive" value="false"/>
+        <parameter key="enable_macros" value="false"/>
+        <parameter key="macro_for_file_name" value="file_name"/>
+        <parameter key="macro_for_file_type" value="file_type"/>
+        <parameter key="macro_for_folder_name" value="folder_name"/>
+        <parameter key="reuse_results" value="false"/>
+        <parameter key="enable_parallel_execution" value="true"/>
+        <process expanded="true">
+          <operator activated="true" class="text:read_document" compatibility="8.2.000" expanded="true" height="68" name="Read Document (2)" width="90" x="112" y="34">
+            <parameter key="extract_text_only" value="true"/>
+            <parameter key="use_file_extension_as_type" value="true"/>
+            <parameter key="content_type" value="txt"/>
+            <parameter key="encoding" value="SYSTEM"/>
+          </operator>
+          <operator activated="true" class="wordnet:open_wordnet_dictionary" compatibility="5.3.000" expanded="true" height="68" name="Open WordNet Dictionary (3)" width="90" x="179" y="289">
+            <parameter key="resource_type" value="directory"/>
+            <parameter key="directory" value="/Users/mattiafumagalli/Desktop/WordNet-3.0/dict"/>
+          </operator>
+          <operator activated="true" class="multiply" compatibility="9.2.000" expanded="true" height="103" name="Multiply (3)" width="90" x="313" y="289"/>
+          <operator activated="true" class="text:tokenize" compatibility="8.2.000" expanded="true" height="68" name="Tokenize (4)" width="90" x="246" y="34">
+            <parameter key="mode" value="non letters"/>
+            <parameter key="characters" value=".:"/>
+            <parameter key="language" value="English"/>
+            <parameter key="max_token_length" value="3"/>
+          </operator>
+          <operator activated="true" class="text:transform_cases" compatibility="8.2.000" expanded="true" height="68" name="Transform Cases (3)" width="90" x="380" y="34">
+            <parameter key="transform_to" value="lower case"/>
+          </operator>
+          <operator activated="true" class="text:filter_stopwords_english" compatibility="8.2.000" expanded="true" height="68" name="Filter Stopwords (4)" width="90" x="179" y="136"/>
+          <operator activated="true" class="text:filter_by_length" compatibility="8.2.000" expanded="true" height="68" name="Filter Tokens (3)" width="90" x="313" y="136">
+            <parameter key="min_chars" value="3"/>
+            <parameter key="max_chars" value="25"/>
+          </operator>
+          <operator activated="true" class="multiply" compatibility="9.2.000" expanded="true" height="103" name="Multiply (4)" width="90" x="447" y="187"/>
+          <operator activated="true" class="wordnet:find_synonym_wordnet" compatibility="5.3.000" expanded="true" height="82" name="Find Synonyms (2)" width="90" x="581" y="187">
+            <parameter key="use_prefix" value="false"/>
+            <parameter key="synset_word_prefix" value="syn:"/>
+            <parameter key="maximum_recursion_depth" value="1"/>
+            <parameter key="multiple_meanings_per_word_policy" value="Take only first meaning"/>
+            <parameter key="multiple_synsets_policy" value="Take only first synset per meaning"/>
+            <parameter key="multiple_synset_words_policy" value="Take only first synset word"/>
+            <parameter key="concatenation" value="Concatenate result per synset"/>
+            <parameter key="keep_original_tokens" value="true"/>
+            <parameter key="keep_unmatched_tokens" value="false"/>
+            <parameter key="take_ID_instead_of_words" value="false"/>
+            <parameter key="work_on_type_noun" value="true"/>
+            <parameter key="work_on_type_verb" value="true"/>
+            <parameter key="work_on_type_adjective" value="true"/>
+            <parameter key="work_on_type_adverb" value="true"/>
+          </operator>
+          <operator activated="true" class="wordnet:find_hypernym_wordnet" compatibility="5.3.000" expanded="true" height="82" name="Find Hypernyms (2)" width="90" x="581" y="289">
+            <parameter key="use_prefix" value="false"/>
+            <parameter key="synset_word_prefix" value="hyper:"/>
+            <parameter key="maximum_recursion_depth" value="1"/>
+            <parameter key="multiple_meanings_per_word_policy" value="Take only first meaning"/>
+            <parameter key="multiple_synsets_policy" value="Take only first synset per meaning"/>
+            <parameter key="multiple_synset_words_policy" value="Take only first synset word"/>
+            <parameter key="concatenation" value="Concatenate result per synset"/>
+            <parameter key="keep_original_tokens" value="true"/>
+            <parameter key="keep_unmatched_tokens" value="false"/>
+            <parameter key="take_ID_instead_of_words" value="false"/>
+            <parameter key="work_on_type_noun" value="true"/>
+            <parameter key="work_on_type_verb" value="true"/>
+            <parameter key="work_on_type_adjective" value="true"/>
+            <parameter key="work_on_type_adverb" value="true"/>
+          </operator>
+          <operator activated="true" class="text:combine_documents" compatibility="8.2.000" expanded="true" height="103" name="Combine Documents (2)" width="90" x="782" y="187"/>
+          <connect from_port="file object" to_op="Read Document (2)" to_port="file"/>
+          <connect from_op="Read Document (2)" from_port="output" to_op="Tokenize (4)" to_port="document"/>
+          <connect from_op="Open WordNet Dictionary (3)" from_port="dictionary" to_op="Multiply (3)" to_port="input"/>
+          <connect from_op="Multiply (3)" from_port="output 1" to_op="Find Synonyms (2)" to_port="dictionary"/>
+          <connect from_op="Multiply (3)" from_port="output 2" to_op="Find Hypernyms (2)" to_port="dictionary"/>
+          <connect from_op="Tokenize (4)" from_port="document" to_op="Transform Cases (3)" to_port="document"/>
+          <connect from_op="Transform Cases (3)" from_port="document" to_op="Filter Stopwords (4)" to_port="document"/>
+          <connect from_op="Filter Stopwords (4)" from_port="document" to_op="Filter Tokens (3)" to_port="document"/>
+          <connect from_op="Filter Tokens (3)" from_port="document" to_op="Multiply (4)" to_port="input"/>
+          <connect from_op="Multiply (4)" from_port="output 1" to_op="Find Synonyms (2)" to_port="document"/>
+          <connect from_op="Multiply (4)" from_port="output 2" to_op="Find Hypernyms (2)" to_port="document"/>
+          <connect from_op="Find Synonyms (2)" from_port="document" to_op="Combine Documents (2)" to_port="documents 1"/>
+          <connect from_op="Find Hypernyms (2)" from_port="document" to_op="Combine Documents (2)" to_port="documents 2"/>
+          <connect from_op="Combine Documents (2)" from_port="document" to_port="output 1"/>
+          <portSpacing port="source_file object" spacing="0"/>
+          <portSpacing port="source_input 1" spacing="0"/>
+          <portSpacing port="sink_output 1" spacing="0"/>
+          <portSpacing port="sink_output 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="operator_toolbox:apply_model_documents" compatibility="2.0.000" expanded="true" height="103" name="Apply Model (Documents)" origin="GENERATED_TUTORIAL" width="90" x="916" y="493">
+        <list key="application_parameters"/>
+      </operator>
+      <operator activated="true" class="write_excel" compatibility="9.2.000" expanded="true" height="82" name="Write Excel (2)" width="90" x="1117" y="493">
+        <parameter key="excel_file" value="/Users/mattiafumagalli/Desktop/topics-prediction.xlsx"/>
+        <parameter key="file_format" value="xlsx"/>
+        <parameter key="encoding" value="SYSTEM"/>
+        <parameter key="sheet_name" value="RapidMiner Data"/>
+        <parameter key="date_format" value="yyyy-MM-dd HH:mm:ss"/>
+        <parameter key="number_format" value="#.0"/>
+      </operator>
+      <connect from_op="Loop Files" from_port="output 1" to_op="Extract Topics from Documents (LDA)" to_port="col"/>
+      <connect from_op="Extract Topics from Documents (LDA)" from_port="exa" to_op="Write Excel" to_port="input"/>
+      <connect from_op="Extract Topics from Documents (LDA)" from_port="top" to_port="result 4"/>
+      <connect from_op="Extract Topics from Documents (LDA)" from_port="mod" to_op="Apply Model (Documents)" to_port="mod"/>
+      <connect from_op="Extract Topics from Documents (LDA)" from_port="per" to_port="result 1"/>
+      <connect from_op="Write Excel" from_port="through" to_port="result 2"/>
+      <connect from_op="Loop Files (2)" from_port="output 1" to_op="Apply Model (Documents)" to_port="doc"/>
+      <connect from_op="Apply Model (Documents)" from_port="exa" to_op="Write Excel (2)" to_port="input"/>
+      <connect from_op="Write Excel (2)" from_port="through" to_port="result 3"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+      <portSpacing port="sink_result 3" spacing="0"/>
+      <portSpacing port="sink_result 4" spacing="0"/>
+      <portSpacing port="sink_result 5" spacing="0"/>
+      <description align="center" color="yellow" colored="false" height="52" resized="true" width="204" x="633" y="579">extract trend from set of WSQs&lt;br&gt;&lt;br&gt;</description>
+    </process>
+  </operator>
+</process>
