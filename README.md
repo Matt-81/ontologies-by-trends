@@ -6,7 +6,7 @@ This folder contains the main processes used in the experiment:
 #trends generator
 #ontology assessment via search trends
 
-The xml file can be run within the RapidMiner Framework: https://rapidminer.com/
+The .xml file can be run within the RapidMiner Framework: https://rapidminer.com/
 
 ### Data
 This folder contains:
