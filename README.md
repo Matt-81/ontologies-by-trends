@@ -1,5 +1,5 @@
 ## ontologies-by-trends ##
-Data and resources for EKAW2020 paper: Assessing Ontologies Usage Likelihood via Search Trends - https://ekaw2020.inf.unibz.it/
+Data and resources for SKALE_2020 paper: Assessing Ontologies Usage Likelihood via Search Trends - https://skale-workshop.gitlab.io/
 
 ### Processes 
 This folder contains the main processes used in the experiment: 
